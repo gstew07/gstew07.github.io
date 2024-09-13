@@ -22,6 +22,13 @@ function draw() {
     xpos += 2
     if (xpos > width/2) xpos = 0;
   }
+  if (keyIsPressed && key === "x") {
+    headSize += -1
+  }
+  if (keyIsPressed && key === "z") {
+    headSize += 1
+    
+  }
 
   fill(0, 255, 0);
   circle(width / 2 + xpos, height / 2, 2 * headSize);
