@@ -1,7 +1,7 @@
-// Escape the facilty
+// house on changing landscape
 // Gavin Stewart
 // Sept. 17 2024
-//
+//using basic Java script to create a changing landscape
 
 
 function setup() {
