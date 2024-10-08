@@ -22,14 +22,15 @@ function draw() {
   background(220);
   generateTerrain();
   drawFlag(maxX, maxY);
-  tTime0 += 0.001 * (10/rectWidth)
+  tTime0 += 0.1 * (10/rectWidth)// adds paning
+  print(frameRate());
 }
 
 function generateTerrain(){
   let avgY = 0
   maxY = height
 
-  let tTime1 =tTime0
+  let tTime1 =tTime0 // resets the "noise" time every rotation
   for (let x = 0; x < width ; x+= rectWidth){
     let rectHeight = noise(tTime1);
     rectHeight = map(rectHeight, 0, 1, 100, 1000);
@@ -47,14 +48,14 @@ function generateTerrain(){
       maxX = x;
       maxY = height - rectHeight;
     }
-    avgY += height - rectHeight
+    avgY += height - rectHeight //adds all y-values together
   }
-  avgY = avgY/(width/rectWidth)
+  avgY = avgY/(width/rectWidth) // uses all y-values to average their height
   stroke(255,0,0)
   line(0, avgY, width, avgY)
 }
 
-function keyPressed(){
+function keyPressed(){ //changes terrain size
   if (keyCode === 37){
     rectWidth -= 1;
     if(rectWidth < 1) rectWidth = 1;
@@ -66,7 +67,7 @@ function keyPressed(){
   
 }
 
-function drawFlag(x, y){
+function drawFlag(x, y){ // draws flag using x,y location
   fill(0);
   stroke(0);
   line(x,y,x,y-30);
