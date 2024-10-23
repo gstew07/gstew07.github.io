@@ -6,49 +6,67 @@
 // - describe what you did to take this project "above and beyond"
 
 let car;
-let eastbound =[], westbound = [];
+let eastbound = [], westbound = [];
 let lightMod = 1;
-let fCount;
+let fCount, lightColor = "green";
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
   noStroke();
-  for(let i = 0; i < 20; i++){
-    eastbound.push(new Vehicle(round(random(0,1)), [random(0,255), random(0,255), random(0,255)], random(0, width), random(height/2 + 20,height/2 + 275), 1, random(1, 15)));
-    westbound.push(new Vehicle(round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0, width), random(height/2 -275,height/2 - 20), 0, random(-15, -1)));
+  for (let i = 0; i < 20; i++) {
+    eastbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 + 20, height / 2 + 275), 1, random(1, 15)));
+    westbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 - 275, height / 2 - 20), 0, random(-15, -1)));
   }
+  print(lightMod);
 }
 
 function draw() {
   background(220);
   drawRoad();
-  for( let v of eastbound){
+  for (let v of eastbound) {
     v.action();
   }
-  for( let v of westbound){
+  for (let v of westbound) {
     v.action();
   }
   stopLight();
 }
-function stopLight(){
-  if(lightMod === 0){
+function stopLight() {
+  if (keyIsPressed && key === " ") {
+    lightColor = "yellow";
+    fCount = 0;
+    print("stop");
+  }
+  if (lightColor === "yellow") {
+    lightMod -= 0.005;
+  }
+  if (lightMod <= 0) {
+    lightColor = "red";
     fCount += 1;
-    if (fCount === 120){
+    if (fCount === 120) {
+      lightColor = "green";
+    }
+  }
+  if (lightColor === "green") {
+    lightMod += 0.005;
+    lightMod *= 1.05;
+    if (lightMod >= 1) {
       lightMod = 1;
     }
   }
 }
-function keyIsPressed(){
-  if(keyCode === 0);
-}
 
-function mouseClicked(){
-  if(keyIsPressed && keyCode === SHIFT){
-    westbound.push(new Vehicle(round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0, width), random(height/2 -275,height/2 - 20), 0, random(-15, -1)));
+function mouseClicked() {
+  if (keyIsPressed && keyCode === SHIFT) {
+    for (let i = 0; i < 20; i++) {
+      westbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 - 275, height / 2 - 20), 0, random(-15, -1)));
+    }
   }
-  else{
-    eastbound.push(new Vehicle(round(random(0,1)), [random(0,255), random(0,255), random(0,255)], random(0, width), random(height/2 + 20,height/2 + 275), 1, random(1, 15)));
+  else {
+    for (let i = 0; i < 20; i++) {
+      eastbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 + 20, height / 2 + 275), 1, random(1, 15)));
+    }
   }
 }
 
@@ -74,15 +92,15 @@ function drawCar(x, y, color) {
 
 function drawTruck(x, y, color, direction) {
   fill(color);
-  if (direction === 1){
+  if (direction === 1) {
     rect(x - 10, y, 40, 30);
     rect(x + 20.0, y, 15, 30);
   }
-  else{
+  else {
     rect(x + 10, y, 40, 30);
     rect(x - 20.0, y, 15, 30);
   }
-  
+
 }
 
 class Vehicle {
@@ -103,55 +121,56 @@ class Vehicle {
     }
   }
   move() {
-    this.x += this.xSpeed*lightMod;
-    if(this.x > width){
+    this.x += this.xSpeed * lightMod;
+    if (this.x > width) {
       this.x = 0;
     }
-    if(this.x < 0){
+    if (this.x < 0) {
       this.x = width;
     }
   }
   speedUp() {
     if (this.xSpeed > 0) {
       this.xSpeed += 1;
-      if (this.xSpeed > 15){
+      if (this.xSpeed > 15) {
         this.xSpeed = 15;
       }
     }
     else {
       this.xSpeed -= 1;
-      if (this.xSpeed < -15){
+      if (this.xSpeed < -15) {
         this.xSpeed = -15;
       }
     }
   }
-  speedDown(){
+  speedDown() {
     if (this.xSpeed > 0) {
       this.xSpeed -= 1;
-      if (this.xSpeed === 0){
+      if (this.xSpeed <= 0) {
         this.xSpeed = 1;
       }
     }
     else {
       this.xSpeed += 1;
-      if (this.xSpeed === 0){
+      if (this.xSpeed >= 0) {
         this.xSpeed = -1;
       }
     }
   }
-  changeColor(){
-    this.color= [random(0,255),random(0,255) ,random(0,255)];
+  changeColor() {
+    this.color = [random(0, 255), random(0, 255), random(0, 255)];
   }
-  action(){
+  action() {
     this.move();
     let rNum = random(1, 100);
-    if(rNum === 50){
+    rNum = round(rNum);
+    if (rNum === 50) {
       this.speedUp();
     }
-    if(rNum === 47){
+    if (rNum === 47) {
       this.speedDown();
     }
-    if(rNum === 98){
+    if (rNum === 98) {
       this.changeColor();
     }
     this.display();
