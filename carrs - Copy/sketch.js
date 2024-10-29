@@ -5,7 +5,6 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let car;
 let eastbound = [], westbound = [];
 let lightMod = 1;
 let fCount, lightColor = "green";
@@ -14,17 +13,16 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
   noStroke();
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 20; i++) { // adds 20 cars at the start of program
     eastbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 + 20, height / 2 + 275), 1, random(1, 15)));
     westbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 - 275, height / 2 - 20), 0, random(-15, -1)));
   }
-  print(lightMod);
 }
 
 function draw() {
   background(220);
   drawRoad();
-  for (let v of eastbound) {
+  for (let v of eastbound) { // updates the eastbound/ westbound cars
     v.action();
   }
   for (let v of westbound) {
@@ -32,7 +30,7 @@ function draw() {
   }
   stopLight();
 }
-function stopLight() {
+function stopLight() { // adds stop light function to the program slowing down and stopping cars
   fill(255,255,0);
   rect(width/2, height/2 - 400, 75, 150);
   for(let i = 1; i < 4; i++){
@@ -44,12 +42,12 @@ function stopLight() {
     fCount = 0;
     print("stop");
   }
-  if (lightColor === "yellow") {
+  if (lightColor === "yellow") { // slows down cars
     fill(255,200,0);
     circle(width/2, height/2 - 475 + (100 - 25), 45);
     lightMod -= 0.005;
   }
-  if (lightMod <= 0) {
+  if (lightMod <= 0) { // stops cars
     fill(255,0,0);
     circle(width/2, height/2 - 475 + (50 - 25), 45);
     lightColor = "red";
@@ -58,7 +56,7 @@ function stopLight() {
       lightColor = "green";
     }
   }
-  if (lightColor === "green") {
+  if (lightColor === "green") { 
     fill(0,255,0);
     circle(width/2, height/2 - 475 + (150 - 25), 45);
     lightMod += 0.005;
@@ -69,7 +67,7 @@ function stopLight() {
   }
 }
 
-function mouseClicked() {
+function mouseClicked() { // adds cars when clicked/shift clicked
   if (keyIsPressed && keyCode === SHIFT) {
     for (let i = 0; i < 20; i++) {
       westbound.push(new Vehicle(round(random(0, 1)), [random(0, 255), random(0, 255), random(0, 255)], random(0, width), random(height / 2 - 275, height / 2 - 20), 0, random(-15, -1)));
@@ -82,7 +80,7 @@ function mouseClicked() {
   }
 }
 
-function drawRoad() {
+function drawRoad() {// creates the road
   fill(0);
   rect(width/2, height /2, width, 600);
   fill(255,255,0);
@@ -105,7 +103,7 @@ function drawRoad() {
 
 }
 
-function drawCar(x, y, color) {
+function drawCar(x, y, color) { // draws car
   fill(color);
   rect(x, y, 40, 15);
   fill(255);
@@ -115,7 +113,7 @@ function drawCar(x, y, color) {
   rect(x - 15, y + 7.5, 4, 1);
 }
 
-function drawTruck(x, y, color, direction) {
+function drawTruck(x, y, color, direction) { // draws  truck
   fill(color);
   if (direction === 1) {
     rect(x - 10, y, 40, 30);
@@ -138,7 +136,7 @@ class Vehicle {
     this.xSpeed = xSpeed;
     this.laneS = 0;
   }
-  display() {
+  display() { // displays either a truck or car 
     if (this.type === 0) {
       drawCar(this.x, this.y, this.color);
     }
@@ -146,7 +144,7 @@ class Vehicle {
       drawTruck(this.x, this.y, this.color, this.direction);
     }
   }
-  move() {
+  move() { // updates vehicle position
     this.x += this.xSpeed * lightMod;
     if (this.x > width) {
       this.x = 0;
@@ -155,7 +153,7 @@ class Vehicle {
       this.x = width;
     }
   }
-  speedUp() {
+  speedUp() { // can speed up cars in either direction
     if (this.xSpeed > 0) {
       this.xSpeed += 1;
       if (this.xSpeed > 15) {
@@ -169,7 +167,7 @@ class Vehicle {
       }
     }
   }
-  speedDown() {
+  speedDown() { // can slow down cars in either direction
     if (this.xSpeed > 0) {
       this.xSpeed -= 1;
       if (this.xSpeed <= 0) {
@@ -183,22 +181,23 @@ class Vehicle {
       }
     }
   }
-  changeColor() {
+  changeColor() {// generates random colour
     this.color = [random(0, 255), random(0, 255), random(0, 255)];
   }
-  laneSelect(){
+  laneSelect(){ // selects lane based on speed
     if(this.xSpeed > 0){
       this.laneS = round(map(this.xSpeed, 0, 15, 0, 9));
-      this.y = (height/2 - 300) +  (30*this.laneS+15);
+      this.y = height/2 - 300 +  (30*this.laneS+15);
+
     }
     if(this.xSpeed < 0){
       this.laneS = round(map(this.xSpeed, -15, 0, -9, 0));
-      this.y = (height/2 + 300) + (30*this.laneS-15);
+      this.y = height/2 + 300 + (30*this.laneS-15);
     }
     
     
   }
-  action() {
+  action() { // function that calls all function
     this.move();
     let rNum = random(1, 100);
     rNum = round(rNum);
